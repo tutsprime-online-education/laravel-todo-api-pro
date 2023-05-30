@@ -6,7 +6,6 @@ use App\Models\Task;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 
@@ -22,7 +21,13 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return TaskResource::collection(auth()->user()->tasks()->get());
+        $tasks = auth()->user()
+            ->tasks()
+            ->handleSort(request()->query('sort_by') ?? 'time')
+            ->with('priority')
+            ->get();
+
+        return TaskResource::collection($tasks);
     }
 
     /**
