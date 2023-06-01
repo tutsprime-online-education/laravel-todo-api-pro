@@ -36,6 +36,7 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $task = $request->user()->tasks()->create($request->validated());
+        $task->load('priority');
 
         return TaskResource::make($task);
     }
@@ -54,6 +55,7 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $task->update($request->validated());
+        $task->load('priority');
 
         return TaskResource::make($task);
     }
